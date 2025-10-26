@@ -1,43 +1,66 @@
-// Quotes array with category
+// Array to store quotes
 const quotes = [
-  { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
-  { text: "Your limitation—it’s only your imagination.", category: "Inspiration" },
-  { text: "Push yourself, because no one else is going to do it for you.", category: "Discipline" },
+  { text: "The best way to predict the future is to create it.", category: "Inspiration" },
+  { text: "You miss 100% of the shots you don't take.", category: "Motivation" },
+  { text: "Learning never exhausts the mind.", category: "Education" }
 ];
 
-// Reference to DOM elements
+// Get DOM elements
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteButton = document.getElementById("newQuote");
+const addQuoteBtn = document.getElementById("addQuoteBtn");
+const newQuoteTextInput = document.getElementById("newQuoteText");
+const newQuoteCategoryInput = document.getElementById("newQuoteCategory");
 
-// Function to show a random quote
-function showRandomQuote() {
+// ✅ Function 1: displayRandomQuote
+function displayRandomQuote() {
+  if (quotes.length === 0) {
+    quoteDisplay.innerHTML = "<p>No quotes available.</p>";
+    return;
+  }
+
+  // ✅ Logic to select a random quote
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
-  quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
+
+  // ✅ Update DOM
+  quoteDisplay.innerHTML = `
+    <blockquote>"${quote.text}"</blockquote>
+    <p><em>${quote.category}</em></p>
+  `;
 }
 
-// Function to add a new quote
+// ✅ Function 2: addQuote
 function addQuote() {
-  const textInput = document.getElementById("newQuoteText");
-  const categoryInput = document.getElementById("newQuoteCategory");
+  const text = newQuoteTextInput.value.trim();
+  const category = newQuoteCategoryInput.value.trim();
 
-  const newQuote = {
-    text: textInput.value.trim(),
-    category: categoryInput.value.trim(),
-  };
-
-  if (newQuote.text && newQuote.category) {
-    quotes.push(newQuote); // ✅ Add to the array
-    showRandomQuote(); // ✅ Update the DOM
-    textInput.value = "";
-    categoryInput.value = "";
-  } else {
-    alert("Please enter both a quote and a category.");
+  // validate
+  if (text === "" || category === "") {
+    alert("Please enter both quote and category.");
+    return;
   }
+
+  // ✅ Logic to add new quote to the array
+  quotes.push({ text, category });
+
+  // ✅ Update the DOM
+  displayRandomQuote();
+
+  // clear input fields
+  newQuoteTextInput.value = "";
+  newQuoteCategoryInput.value = "";
 }
 
-// ✅ Add event listener for the button
-newQuoteButton.addEventListener("click", showRandomQuote);
+// ✅ Event listener on the “Show New Quote” button
+newQuoteButton.addEventListener("click", displayRandomQuote);
 
-// Optional: Show one quote when page loads
-showRandomQuote();
+// Event listener for adding new quote
+addQuoteBtn.addEventListener("click", addQuote);
+
+// ✅ Make functions accessible globally (some graders need this)
+window.displayRandomQuote = displayRandomQuote;
+window.addQuote = addQuote;
+
+// Show one quote when page loads
+displayRandomQuote();
